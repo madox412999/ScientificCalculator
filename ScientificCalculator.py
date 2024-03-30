@@ -40,11 +40,11 @@ def insert_e():
 
 def insert_sqrt():
     current_text = entry.get()
-    if current_text.strip():  # Check if there's any text in the entry field
-        entry.delete(0, tk.END)  # Clear the entry field
-        entry.insert(tk.END, f"sqrt({current_text})")  # Insert sqrt(current_text)
+    if current_text.strip():
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, f"sqrt({current_text})")
     else:
-        entry.insert(tk.END, "sqrt(")  # If no text, just insert "sqrt("
+        entry.insert(tk.END, "sqrt(")  
 
 def insert_pow():
     entry.insert(tk.END, "**")
