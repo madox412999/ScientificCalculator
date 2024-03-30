@@ -2,6 +2,8 @@ import tkinter as tk
 import math
 
 last_result = None
+memory_value = None
+engineering_notation = False 
 
 def clear():
     entry.delete(0, tk.END)
@@ -61,6 +63,43 @@ def calculate_percentage():
         clear()
         entry.insert(tk.END, "Error")
 
+def memory_add():
+    global memory_value
+    try:
+        value = float(entry.get())
+        memory_value = value
+    except ValueError:
+        pass
+
+def memory_recall():
+    global memory_value
+    if memory_value is not None:
+        entry.insert(tk.END, str(memory_value))
+
+def switch_to_eng_notation():
+    global engineering_notation
+    engineering_notation = not engineering_notation
+    update_display()
+
+def update_display():
+    current_text = entry.get()
+    if engineering_notation:
+        try:
+            value = float(current_text)
+            exponent = math.floor(math.log10(abs(value)))
+            magnitude = value / (10 ** exponent)
+            if magnitude == int(magnitude):
+                entry.delete(0, tk.END)
+                entry.insert(tk.END, f"{int(magnitude)}e{exponent}")
+            else:
+                entry.delete(0, tk.END)
+                entry.insert(tk.END, f"{magnitude:.2f}e{exponent}")
+        except ValueError:
+            pass
+    else:
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, current_text)
+
 window = tk.Tk()
 window.title("Scientific Calculator")
 
@@ -96,10 +135,13 @@ buttons = [
     ("=", evaluate_expression),
     ("Ans", lambda: insert_character('Ans')),
     ("DEL", delete_last_character),
-    ("%", calculate_percentage)
+    ("%", calculate_percentage),
+    ("M+", memory_add),
+    ("RCL", memory_recall),
+    ("ENG", switch_to_eng_notation)
 ]
 
-for i in range(7):
+for i in range(8):
     window.grid_rowconfigure(i, weight=1)
 for i in range(5):
     window.grid_columnconfigure(i, weight=1)
