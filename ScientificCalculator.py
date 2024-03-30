@@ -13,7 +13,9 @@ def evaluate_expression():
     try:
         expression = entry.get()
         expression = expression.replace('log', 'math.log10')
+        expression = expression.replace('ln', 'math.log')
         expression = expression.replace('--', '+')
+        expression = expression.replace('sqrt', 'math.sqrt')
         result = eval(expression)
         last_result = result
         clear()
@@ -21,6 +23,7 @@ def evaluate_expression():
     except Exception as e:
         clear()
         entry.insert(tk.END, "Error")
+
 
 def insert_character(char):
     global last_result
@@ -36,7 +39,12 @@ def insert_e():
     entry.insert(tk.END, str(math.e))
 
 def insert_sqrt():
-    entry.insert(tk.END, "sqrt(")
+    current_text = entry.get()
+    if current_text.strip():  # Check if there's any text in the entry field
+        entry.delete(0, tk.END)  # Clear the entry field
+        entry.insert(tk.END, f"sqrt({current_text})")  # Insert sqrt(current_text)
+    else:
+        entry.insert(tk.END, "sqrt(")  # If no text, just insert "sqrt("
 
 def insert_pow():
     entry.insert(tk.END, "**")
@@ -111,6 +119,14 @@ def insert_log():
     else:
         entry.insert(tk.END, "log(")
 
+def insert_ln():
+    current_text = entry.get()
+    if current_text.strip():
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, f"ln({current_text})")
+    else:
+        entry.insert(tk.END, "ln(")
+
 def insert_negation():
     current_text = entry.get()
     if current_text.startswith('-'):
@@ -158,6 +174,7 @@ buttons = [
     ("RCL", memory_recall),
     ("ENG", switch_to_eng_notation),
     ("log", insert_log),
+    ("ln", insert_ln),
     ("(-)", insert_negation)
 ]
 
