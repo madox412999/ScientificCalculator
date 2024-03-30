@@ -3,7 +3,7 @@ import math
 
 last_result = None
 memory_value = None
-engineering_notation = False 
+engineering_notation = False
 
 def clear():
     entry.delete(0, tk.END)
@@ -11,7 +11,10 @@ def clear():
 def evaluate_expression():
     global last_result
     try:
-        result = eval(entry.get())
+        expression = entry.get()
+        # Replace 'log' with 'math.log10'
+        expression = expression.replace('log', 'math.log10')
+        result = eval(expression)
         last_result = result
         clear()
         entry.insert(tk.END, str(result))
@@ -100,6 +103,16 @@ def update_display():
         entry.delete(0, tk.END)
         entry.insert(tk.END, current_text)
 
+def insert_log():
+    current_text = entry.get()
+    if current_text.strip():  # Check if there's any text in the entry field
+        entry.delete(0, tk.END)  # Clear the entry field
+        entry.insert(tk.END, f"log({current_text})")  # Insert log(current_text)
+    else:
+        entry.insert(tk.END, "log(")  # If no text, just insert "log("
+
+
+
 window = tk.Tk()
 window.title("Scientific Calculator")
 
@@ -138,7 +151,8 @@ buttons = [
     ("%", calculate_percentage),
     ("M+", memory_add),
     ("RCL", memory_recall),
-    ("ENG", switch_to_eng_notation)
+    ("ENG", switch_to_eng_notation),
+    ("log", insert_log)
 ]
 
 for i in range(8):
