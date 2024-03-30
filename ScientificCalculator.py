@@ -12,8 +12,8 @@ def evaluate_expression():
     global last_result
     try:
         expression = entry.get()
-        # Replace 'log' with 'math.log10'
         expression = expression.replace('log', 'math.log10')
+        expression = expression.replace('--', '+')
         result = eval(expression)
         last_result = result
         clear()
@@ -105,13 +105,18 @@ def update_display():
 
 def insert_log():
     current_text = entry.get()
-    if current_text.strip():  # Check if there's any text in the entry field
-        entry.delete(0, tk.END)  # Clear the entry field
-        entry.insert(tk.END, f"log({current_text})")  # Insert log(current_text)
+    if current_text.strip():
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, f"log({current_text})")
     else:
-        entry.insert(tk.END, "log(")  # If no text, just insert "log("
+        entry.insert(tk.END, "log(")
 
-
+def insert_negation():
+    current_text = entry.get()
+    if current_text.startswith('-'):
+        entry.delete(0)
+    else:
+        entry.insert(0, "-")
 
 window = tk.Tk()
 window.title("Scientific Calculator")
@@ -152,7 +157,8 @@ buttons = [
     ("M+", memory_add),
     ("RCL", memory_recall),
     ("ENG", switch_to_eng_notation),
-    ("log", insert_log)
+    ("log", insert_log),
+    ("(-)", insert_negation)
 ]
 
 for i in range(8):
