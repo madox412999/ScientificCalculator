@@ -44,10 +44,21 @@ def insert_sqrt():
         entry.delete(0, tk.END)
         entry.insert(tk.END, f"sqrt({current_text})")
     else:
-        entry.insert(tk.END, "sqrt(")  
+        entry.insert(tk.END, "sqrt(")
 
 def insert_pow():
     entry.insert(tk.END, "**")
+
+def insert_pow_2():
+    current_text = entry.get()
+    try:
+        result = eval(f"{current_text} ** 2")
+        clear()
+        entry.insert(tk.END, str(result))
+    except Exception as e:
+        clear()
+        entry.insert(tk.END, "Error")
+
 
 def insert_factorial():
     entry.insert(tk.END, "math.factorial(")
@@ -175,10 +186,11 @@ buttons = [
     ("ENG", switch_to_eng_notation),
     ("log", insert_log),
     ("ln", insert_ln),
-    ("(-)", insert_negation)
+    ("(-)", insert_negation),
+    ("x²", insert_pow_2)
 ]
 
-for i in range(8):
+for i in range(9):
     window.grid_rowconfigure(i, weight=1)
 for i in range(5):
     window.grid_columnconfigure(i, weight=1)
