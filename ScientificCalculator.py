@@ -25,7 +25,6 @@ def evaluate_expression():
         clear()
         entry.insert(tk.END, "Error")
 
-
 def insert_character(char):
     global last_result
     if char == "Ans" and last_result is not None:
@@ -173,8 +172,43 @@ def absolute_value_or_fraction():
     clear()
     entry.insert(tk.END, str(result))
 
+def combinations():
+    try:
+        n = int(entry.get())
+        clear()
+        entry.insert(tk.END, str(n) + "C")
+    except ValueError:
+        clear()
+        entry.insert(tk.END, "Error")
 
+def n_choose_r():
+    try:
+        expression = entry.get()
+        n, r = map(int, expression.split("C"))
+        result = math.comb(n, r)
+        clear()
+        entry.insert(tk.END, str(result))
+    except ValueError:
+        clear()
+        entry.insert(tk.END, "Error")
 
+def polar_to_rectangular():
+    try:
+        expression = entry.get()
+        r, theta = map(float, expression.split(","))
+        x = r * math.cos(math.radians(theta))
+        y = r * math.sin(math.radians(theta))
+        clear()
+        entry.insert(tk.END, f"({x}, {y})")
+    except ValueError:
+        clear()
+        entry.insert(tk.END, "Error")
+
+def equals():
+    if "C" in entry.get():
+        n_choose_r()
+    else:
+        evaluate_expression()
 
 window = tk.Tk()
 window.title("Scientific Calculator")
@@ -208,7 +242,7 @@ buttons = [
     ("0", lambda: insert_character('0')),
     (".", lambda: insert_character('.')),
     ("+", lambda: insert_character('+')),
-    ("=", evaluate_expression),
+    ("=", equals),
     ("Ans", lambda: insert_character('Ans')),
     ("DEL", delete_last_character),
     ("%", calculate_percentage),
@@ -221,6 +255,8 @@ buttons = [
     ("x²", insert_pow_2),
     ("x³", insert_pow_3),
     ("ab/c", absolute_value_or_fraction),
+    ("nCr", combinations),
+    ("Pol(", polar_to_rectangular),
 ]
 
 for i in range(9):
