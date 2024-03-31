@@ -1,5 +1,6 @@
 import tkinter as tk
 import math
+import fractions
 
 last_result = None
 memory_value = None
@@ -59,6 +60,15 @@ def insert_pow_2():
         clear()
         entry.insert(tk.END, "Error")
 
+def insert_pow_3():
+    current_text = entry.get()
+    try:
+        result = eval(f"{current_text} ** 3")
+        clear()
+        entry.insert(tk.END, str(result))
+    except Exception as e:
+        clear()
+        entry.insert(tk.END, "Error")
 
 def insert_factorial():
     entry.insert(tk.END, "math.factorial(")
@@ -145,6 +155,27 @@ def insert_negation():
     else:
         entry.insert(0, "-")
 
+def absolute_value_or_fraction():
+    current_text = entry.get().strip()
+    try:
+        value = float(current_text)
+        if value < 0:
+            result = abs(value)
+        else:
+            if value.is_integer():
+                result = int(value)
+            else:
+                fraction = fractions.Fraction(value).limit_denominator()
+                result = f"{fraction.numerator}/{fraction.denominator}"
+    except ValueError:
+        result = "Error"
+
+    clear()
+    entry.insert(tk.END, str(result))
+
+
+
+
 window = tk.Tk()
 window.title("Scientific Calculator")
 
@@ -187,7 +218,9 @@ buttons = [
     ("log", insert_log),
     ("ln", insert_ln),
     ("(-)", insert_negation),
-    ("x²", insert_pow_2)
+    ("x²", insert_pow_2),
+    ("x³", insert_pow_3),
+    ("ab/c", absolute_value_or_fraction),
 ]
 
 for i in range(9):
