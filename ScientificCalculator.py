@@ -194,15 +194,25 @@ def n_choose_r():
 
 def polar_to_rectangular():
     try:
-        expression = entry.get()
-        r, theta = map(float, expression.split(","))
-        x = r * math.cos(math.radians(theta))
-        y = r * math.sin(math.radians(theta))
-        clear()
-        entry.insert(tk.END, f"({x}, {y})")
+        expression = entry.get().strip()
+        if expression:
+            if ',' in expression:
+                r, theta = map(float, expression.split(","))
+            else:
+                r = float(expression)
+                theta = 0  # Default theta value
+            x = r * math.cos(math.radians(theta))
+            y = r * math.sin(math.radians(theta))
+            clear()
+            entry.insert(tk.END, f"({x}, {y})")
+        else:
+            clear()
+            entry.insert(tk.END, "Error: No input provided")
     except ValueError:
         clear()
-        entry.insert(tk.END, "Error")
+        entry.insert(tk.END, "Error: Invalid input format")
+
+
 
 def equals():
     if "C" in entry.get():
@@ -269,6 +279,6 @@ button_height = 2
 
 for i, (text, command) in enumerate(buttons):
     button = tk.Button(window, text=text, width=button_width, height=button_height, command=command)
-    button.grid(row=(i // 5) + 1, column=i % 5, sticky="nsew")
+    button.grid(row=(i // 5) + 1, column=i % 5,padx=3,pady=8, sticky="nsew")
 
 window.mainloop()
