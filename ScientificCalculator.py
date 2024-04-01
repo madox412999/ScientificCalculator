@@ -107,10 +107,6 @@ def memory_recall():
     if memory_value is not None:
         entry.insert(tk.END, str(memory_value))
 
-def switch_to_eng_notation():
-    global engineering_notation
-    engineering_notation = not engineering_notation
-    update_display()
 
 def update_display():
     current_text = entry.get()
@@ -243,42 +239,41 @@ buttons = [
     ("tan", lambda: insert_character("tan(")),
     ("π", insert_pi),
     ("e", insert_e),
+    ("log", insert_log),
+    ("ln", insert_ln),
+    ("RCL", memory_recall),
+    ("M+", memory_add),
+    ("x!", calculate_factorial),
+    ("ab/c", absolute_value_or_fraction),
+    ("Ans", lambda: insert_character('Ans')),
+    ("nCr", combinations),
+    ("Pol(", polar_to_rectangular),
+    ("(-)", insert_negation),
     ("√", insert_sqrt),
     ("^", insert_pow),
     ("(", lambda: insert_character("(")),
     (")", lambda: insert_character(")")),
-    ("AC", clear),
+    ("%", calculate_percentage),
     ("7", lambda: insert_character('7')),
     ("8", lambda: insert_character('8')),
     ("9", lambda: insert_character('9')),
-    ("/", lambda: insert_character('/')),
+    ("x²", insert_pow_2),
+    ("x³", insert_pow_3),
     ("4", lambda: insert_character('4')),
     ("5", lambda: insert_character('5')),
     ("6", lambda: insert_character('6')),
     ("*", lambda: insert_character('*')),
+    ("/", lambda: insert_character('/')),
     ("1", lambda: insert_character('1')),
     ("2", lambda: insert_character('2')),
     ("3", lambda: insert_character('3')),
+    ("+", lambda: insert_character('+')),
     ("-", lambda: insert_character('-')),
     ("0", lambda: insert_character('0')),
     (".", lambda: insert_character('.')),
-    ("+", lambda: insert_character('+')),
-    ("=", equals),
-    ("Ans", lambda: insert_character('Ans')),
     ("DEL", delete_last_character),
-    ("%", calculate_percentage),
-    ("M+", memory_add),
-    ("RCL", memory_recall),
-    ("ENG", switch_to_eng_notation),
-    ("log", insert_log),
-    ("ln", insert_ln),
-    ("(-)", insert_negation),
-    ("x²", insert_pow_2),
-    ("x³", insert_pow_3),
-    ("ab/c", absolute_value_or_fraction),
-    ("nCr", combinations),
-    ("Pol(", polar_to_rectangular),
-    ("x!", calculate_factorial),
+    ("AC", clear),
+    ("=", equals),
 ]
 
 for i in range(10):
