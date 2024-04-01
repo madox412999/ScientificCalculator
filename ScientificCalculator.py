@@ -6,8 +6,18 @@ last_result = None
 memory_value = None
 engineering_notation = False
 
+
 def clear():
     entry.delete(0, tk.END)
+
+
+def insert_result(result):
+    # Check if the result is a whole number
+    if result == int(result):
+        result = int(result)  # Convert to integer if it's a whole number
+    clear()
+    entry.insert(tk.END, str(result))
+
 
 def evaluate_expression():
     global last_result
@@ -19,11 +29,11 @@ def evaluate_expression():
         expression = expression.replace('sqrt', 'math.sqrt')
         result = eval(expression)
         last_result = result
-        clear()
-        entry.insert(tk.END, str(result))
+        insert_result(result)
     except Exception as e:
         clear()
         entry.insert(tk.END, "Error")
+
 
 def insert_character(char):
     global last_result
@@ -32,11 +42,14 @@ def insert_character(char):
     else:
         entry.insert(tk.END, char)
 
+
 def insert_pi():
     entry.insert(tk.END, str(math.pi))
 
+
 def insert_e():
     entry.insert(tk.END, str(math.e))
+
 
 def insert_sqrt():
     current_text = entry.get()
@@ -46,36 +59,40 @@ def insert_sqrt():
     else:
         entry.insert(tk.END, "sqrt(")
 
+
 def insert_pow():
     entry.insert(tk.END, "**")
+
 
 def insert_pow_2():
     current_text = entry.get()
     try:
         result = eval(f"{current_text} ** 2")
-        clear()
-        entry.insert(tk.END, str(result))
+        insert_result(result)
     except Exception as e:
         clear()
         entry.insert(tk.END, "Error")
+
 
 def insert_pow_3():
     current_text = entry.get()
     try:
         result = eval(f"{current_text} ** 3")
-        clear()
-        entry.insert(tk.END, str(result))
+        insert_result(result)
     except Exception as e:
         clear()
         entry.insert(tk.END, "Error")
 
+
 def insert_factorial():
     entry.insert(tk.END, "math.factorial(")
+
 
 def delete_last_character():
     current_text = entry.get()
     if current_text:
         entry.delete(len(current_text) - 1, tk.END)
+
 
 def calculate_percentage():
     try:
@@ -88,11 +105,12 @@ def calculate_percentage():
             result = float(value) - (float(value) * (float(percentage) / 100))
         else:
             result = eval(expression)
-        clear()
-        entry.insert(tk.END, str(result))
+
+        insert_result(result)
     except Exception as e:
         clear()
         entry.insert(tk.END, "Error")
+
 
 def memory_add():
     global memory_value
@@ -101,6 +119,7 @@ def memory_add():
         memory_value = value
     except ValueError:
         pass
+
 
 def memory_recall():
     global memory_value
@@ -127,6 +146,7 @@ def update_display():
         entry.delete(0, tk.END)
         entry.insert(tk.END, current_text)
 
+
 def insert_log():
     current_text = entry.get()
     if current_text.strip():
@@ -134,6 +154,7 @@ def insert_log():
         entry.insert(tk.END, f"log({current_text})")
     else:
         entry.insert(tk.END, "log(")
+
 
 def insert_ln():
     current_text = entry.get()
@@ -143,12 +164,14 @@ def insert_ln():
     else:
         entry.insert(tk.END, "ln(")
 
+
 def insert_negation():
     current_text = entry.get()
     if current_text.startswith('-'):
         entry.delete(0)
     else:
         entry.insert(0, "-")
+
 
 def absolute_value_or_fraction():
     current_text = entry.get().strip()
@@ -168,6 +191,7 @@ def absolute_value_or_fraction():
     clear()
     entry.insert(tk.END, str(result))
 
+
 def combinations():
     try:
         n = int(entry.get())
@@ -176,6 +200,7 @@ def combinations():
     except ValueError:
         clear()
         entry.insert(tk.END, "Error")
+
 
 def n_choose_r():
     try:
@@ -187,6 +212,7 @@ def n_choose_r():
     except ValueError:
         clear()
         entry.insert(tk.END, "Error")
+
 
 def polar_to_rectangular():
     try:
@@ -209,19 +235,18 @@ def polar_to_rectangular():
         entry.insert(tk.END, "Error: Invalid input format")
 
 
-
 def equals():
     if "C" in entry.get():
         n_choose_r()
     else:
         evaluate_expression()
 
+
 def calculate_factorial():
     try:
         n = int(entry.get())
         result = math.factorial(n)
-        clear()
-        entry.insert(tk.END, str(result))
+        insert_result(result)
     except ValueError:
         clear()
         entry.insert(tk.END, "Error")
@@ -286,6 +311,6 @@ button_height = 2
 
 for i, (text, command) in enumerate(buttons):
     button = tk.Button(window, text=text, width=button_width, height=button_height, command=command)
-    button.grid(row=(i // 5) + 1, column=i % 5,padx=3,pady=8, sticky="nsew")
+    button.grid(row=(i // 5) + 1, column=i % 5, padx=3, pady=8, sticky="nsew")
 
 window.mainloop()
