@@ -220,6 +220,17 @@ def equals():
     else:
         evaluate_expression()
 
+def calculate_factorial():
+    try:
+        n = int(entry.get())
+        result = math.factorial(n)
+        clear()
+        entry.insert(tk.END, str(result))
+    except ValueError:
+        clear()
+        entry.insert(tk.END, "Error")
+
+
 window = tk.Tk()
 window.title("Scientific Calculator")
 
@@ -267,9 +278,10 @@ buttons = [
     ("ab/c", absolute_value_or_fraction),
     ("nCr", combinations),
     ("Pol(", polar_to_rectangular),
+    ("x!", calculate_factorial),
 ]
 
-for i in range(9):
+for i in range(10):
     window.grid_rowconfigure(i, weight=1)
 for i in range(5):
     window.grid_columnconfigure(i, weight=1)
