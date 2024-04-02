@@ -2,7 +2,7 @@ import tkinter as tk
 import math
 import fractions
 
-last_result = None
+last_calculations = []
 memory_value = None
 engineering_notation = False
 
@@ -10,13 +10,22 @@ def clear():
     entry.delete(0, tk.END)
 
 def insert_result(result):
+    global last_calculations
+    last_calculation = entry.get() + '=' + str(result)
+    last_calculations.append(last_calculation)
+    if len(last_calculations) > 3:
+        last_calculations.pop(0)
+    history_label.config(text='\n'.join(last_calculations))
+    entry.delete(0, tk.END)
+    entry.insert(tk.END, str(result))
     if result == int(result):
         result = int(result)
+    else:
+        result = float(result)  # Convert to float to remove trailing zeros
     clear()
     entry.insert(tk.END, str(result))
 
 def evaluate_expression():
-    global last_result
     try:
         expression = entry.get()
         expression = expression.replace('log', 'math.log10')
@@ -24,18 +33,13 @@ def evaluate_expression():
         expression = expression.replace('--', '+')
         expression = expression.replace('sqrt', 'math.sqrt')
         result = eval(expression)
-        last_result = result
         insert_result(result)
     except Exception as e:
         clear()
         entry.insert(tk.END, "Error")
 
 def insert_character(char):
-    global last_result
-    if char == "Ans" and last_result is not None:
-        entry.insert(tk.END, str(last_result))
-    else:
-        entry.insert(tk.END, char)
+    entry.insert(tk.END, char)
 
 def insert_pi():
     entry.insert(tk.END, str(math.pi))
@@ -229,7 +233,10 @@ window = tk.Tk()
 window.title("Scientific Calculator")
 
 entry = tk.Entry(window, font=('Helvetica', 20), justify='right')
-entry.grid(row=0, column=0, columnspan=5, sticky="ew")
+entry.grid(row=1, column=0, columnspan=5, sticky="ew")
+
+history_label = tk.Label(window, text="", font=('Helvetica', 12), height=3, anchor='e')
+history_label.grid(row=0, column=0, columnspan=5, sticky="ew")
 
 buttons = [
     ("sin", lambda: insert_character("sin(")),
@@ -284,6 +291,6 @@ button_height = 2
 
 for i, (text, command) in enumerate(buttons):
     button = tk.Button(window, text=text, width=button_width, height=button_height, command=command)
-    button.grid(row=(i // 5) + 1, column=i % 5, padx=3, pady=8, sticky="nsew")
+    button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=8, sticky="nsew")
 
 window.mainloop()
