@@ -5,9 +5,15 @@ import fractions
 last_calculations = []
 memory_value = None
 engineering_notation = False
+last_result = None
+
+def store_last_result(result):
+    global last_result
+    last_result = result
 
 def clear():
     entry.delete(0, tk.END)
+
 
 def insert_result(result):
     global last_calculations
@@ -16,12 +22,13 @@ def insert_result(result):
     if len(last_calculations) > 3:
         last_calculations.pop(0)
     history_label.config(text='\n'.join(last_calculations))
+    store_last_result(result)
     entry.delete(0, tk.END)
     entry.insert(tk.END, str(result))
     if result == int(result):
         result = int(result)
     else:
-        result = float(result)  # Convert to float to remove trailing zeros
+        result = float(result)
     clear()
     entry.insert(tk.END, str(result))
 
@@ -202,7 +209,7 @@ def polar_to_rectangular():
                 r, theta = map(float, expression.split(","))
             else:
                 r = float(expression)
-                theta = 0  # Default theta value
+                theta = 0
             x = r * math.cos(math.radians(theta))
             y = r * math.sin(math.radians(theta))
             clear()
@@ -250,7 +257,7 @@ buttons = [
     ("M+", memory_add),
     ("x!", calculate_factorial),
     ("ab/c", absolute_value_or_fraction),
-    ("Ans", lambda: insert_character('Ans')),
+    ("Ans", lambda: insert_character(str(last_result))),
     ("nCr", combinations),
     ("Pol(", polar_to_rectangular),
     ("(-)", insert_negation),
@@ -281,12 +288,10 @@ buttons = [
     ("=", equals),
 ]
 
-# Place buttons from row 2 and beyond
 for i, (text, command) in enumerate(buttons):
     button = tk.Button(window, text=text, width=10, height=2, command=command)
     button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=8, sticky="nsew")
 
-# Configure window to resize properly
 for i in range(2, len(buttons) // 5 + 3):
     window.grid_rowconfigure(i, weight=1)
 
