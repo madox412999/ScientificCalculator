@@ -232,10 +232,10 @@ def calculate_factorial():
 window = tk.Tk()
 window.title("Scientific Calculator")
 
-history_label = tk.Label(window, fg="red", bg="black", text="", font=('Helvetica', 12), height=3, anchor='e')
+history_label = tk.Label(window, fg="red", bg="#C5BD9E", text="", font=('Helvetica', 12), height=3, anchor='e',bd=5, relief='flat')
 history_label.grid(row=0, column=0, columnspan=5, sticky="ew")
 
-entry = tk.Entry(window, font=('Helvetica', 20), justify='right')
+entry = tk.Entry(window, font=('Helvetica', 20), justify='right',bg="#AFE7EB",bd=5, relief='ridge')
 entry.grid(row=1, column=0, columnspan=5, sticky="ew")
 
 buttons = [
