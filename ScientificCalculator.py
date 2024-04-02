@@ -232,11 +232,11 @@ def calculate_factorial():
 window = tk.Tk()
 window.title("Scientific Calculator")
 
+history_label = tk.Label(window, fg="red", bg="black", text="", font=('Helvetica', 12), height=3, anchor='e')
+history_label.grid(row=0, column=0, columnspan=5, sticky="ew")
+
 entry = tk.Entry(window, font=('Helvetica', 20), justify='right')
 entry.grid(row=1, column=0, columnspan=5, sticky="ew")
-
-history_label = tk.Label(window, text="", font=('Helvetica', 12), height=3, anchor='e')
-history_label.grid(row=0, column=0, columnspan=5, sticky="ew")
 
 buttons = [
     ("sin", lambda: insert_character("sin(")),
@@ -281,16 +281,16 @@ buttons = [
     ("=", equals),
 ]
 
-for i in range(10):
+# Place buttons from row 2 and beyond
+for i, (text, command) in enumerate(buttons):
+    button = tk.Button(window, text=text, width=10, height=2, command=command)
+    button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=8, sticky="nsew")
+
+# Configure window to resize properly
+for i in range(2, len(buttons) // 5 + 3):
     window.grid_rowconfigure(i, weight=1)
+
 for i in range(5):
     window.grid_columnconfigure(i, weight=1)
-
-button_width = 10
-button_height = 2
-
-for i, (text, command) in enumerate(buttons):
-    button = tk.Button(window, text=text, width=button_width, height=button_height, command=command)
-    button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=8, sticky="nsew")
 
 window.mainloop()
