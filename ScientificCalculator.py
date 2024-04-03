@@ -239,10 +239,10 @@ def calculate_factorial():
 window = tk.Tk()
 window.title("Scientific Calculator")
 
-history_label = tk.Label(window, fg="red", bg="#C5BD9E", text="", font=('Helvetica', 12), height=3, anchor='e',bd=5, relief='flat')
+history_label = tk.Label(window, fg="red", bg="#C5BD9E", text="", font=('Helvetica', 12), height=3, anchor='e', bd=5, relief='flat')
 history_label.grid(row=0, column=0, columnspan=5, sticky="ew")
 
-entry = tk.Entry(window, font=('Helvetica', 20), justify='right',bg="#AFE7EB",bd=5, relief='ridge')
+entry = tk.Entry(window, font=('Helvetica', 20), justify='right', bg="#AFE7EB", bd=5, relief='ridge')
 entry.grid(row=1, column=0, columnspan=5, sticky="ew")
 
 buttons = [
@@ -261,16 +261,16 @@ buttons = [
     ("nCr", combinations),
     ("Pol(", polar_to_rectangular),
     ("(-)", insert_negation),
-    ("√", insert_sqrt),
-    ("^", insert_pow),
+    ("x²", insert_pow_2),
+    ("x³", insert_pow_3),
     ("(", lambda: insert_character("(")),
     (")", lambda: insert_character(")")),
     ("%", calculate_percentage),
     ("7", lambda: insert_character('7')),
     ("8", lambda: insert_character('8')),
     ("9", lambda: insert_character('9')),
-    ("x²", insert_pow_2),
-    ("x³", insert_pow_3),
+    ("√", insert_sqrt),
+    ("^", insert_pow),
     ("4", lambda: insert_character('4')),
     ("5", lambda: insert_character('5')),
     ("6", lambda: insert_character('6')),
@@ -289,7 +289,10 @@ buttons = [
 ]
 
 for i, (text, command) in enumerate(buttons):
-    button = tk.Button(window, text=text, width=10, height=2, command=command)
+    if text == "AC" or text== "=" or text=="DEL":
+        button = tk.Button(window, text=text, width=10, height=2, command=command, bg="#FF5733", fg="white")
+    else:
+        button = tk.Button(window, text=text, width=10, height=2, command=command)
     button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=8, sticky="nsew")
 
 for i in range(2, len(buttons) // 5 + 3):
