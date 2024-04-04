@@ -290,11 +290,13 @@ buttons = [
 
 for i, (text, command) in enumerate(buttons):
     if text in ["sin", "cos", "tan", "π", "e", "log", "ln", "RCL", "M+", "x!", "ab/c", "Ans", "nCr", "Pol(", "(-)", "x²", "x³", "(", ")", "%"]:
-        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="black", fg="#FF5733",font=(25555))
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="black", fg="#FF5733",font=("Ariel",(12)))
+    elif text in ["^","√","*","/","+","-"]:
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="grey", fg="white",font=("Ariel",(12)))
     elif text == "AC" or text == "=" or text == "DEL":
-        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#FF5733", fg="black")
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#FF5733", fg="black",font=("Ariel",(12)))
     else:
-        button = tk.Button(window, text=text, width=8, height=2, command=command)
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#B6BBC3", fg="white",font=("Ariel",(12)))
     button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=5, sticky="nsew")
 
 
