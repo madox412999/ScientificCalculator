@@ -289,11 +289,14 @@ buttons = [
 ]
 
 for i, (text, command) in enumerate(buttons):
-    if text == "AC" or text== "=" or text=="DEL":
-        button = tk.Button(window, text=text, width=10, height=2, command=command, bg="#FF5733", fg="black",font=('Helvetica', 12))
+    if text in ["sin", "cos", "tan", "π", "e", "log", "ln", "RCL", "M+", "x!", "ab/c", "Ans", "nCr", "Pol(", "(-)", "x²", "x³", "(", ")", "%"]:
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="black", fg="#FF5733",font=(25555))
+    elif text == "AC" or text == "=" or text == "DEL":
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#FF5733", fg="black")
     else:
-        button = tk.Button(window, text=text, width=10, height=2, command=command)
-    button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=8, sticky="nsew")
+        button = tk.Button(window, text=text, width=8, height=2, command=command)
+    button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=5, sticky="nsew")
+
 
 for i in range(2, len(buttons) // 5 + 3):
     window.grid_rowconfigure(i, weight=1)
