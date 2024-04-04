@@ -239,7 +239,7 @@ def calculate_factorial():
 window = tk.Tk()
 window.title("Scientific Calculator")
 
-history_label = tk.Label(window, fg="red", bg="#C5BD9E", text="", font=('Helvetica', 12), height=3, anchor='e', bd=5, relief='flat')
+history_label = tk.Label(window, fg="black", bg="#C5BD9E", text="", font=('Helvetica', 12), height=3, anchor='e', bd=5, relief='flat')
 history_label.grid(row=0, column=0, columnspan=5, sticky="ew")
 
 entry = tk.Entry(window, font=('Helvetica', 20), justify='right', bg="#AFE7EB", bd=5, relief='ridge')
@@ -290,7 +290,7 @@ buttons = [
 
 for i, (text, command) in enumerate(buttons):
     if text == "AC" or text== "=" or text=="DEL":
-        button = tk.Button(window, text=text, width=10, height=2, command=command, bg="#FF5733", fg="white")
+        button = tk.Button(window, text=text, width=10, height=2, command=command, bg="#FF5733", fg="black",font=('Helvetica', 12))
     else:
         button = tk.Button(window, text=text, width=10, height=2, command=command)
     button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=8, sticky="nsew")
