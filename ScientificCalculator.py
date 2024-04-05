@@ -46,6 +46,9 @@ def evaluate_expression():
         entry.insert(tk.END, "Error")
 
 def insert_character(char):
+    current_text = entry.get()
+    if current_text == "Error":
+        clear()
     entry.insert(tk.END, char)
 
 def insert_pi():
