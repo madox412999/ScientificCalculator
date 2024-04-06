@@ -3,13 +3,14 @@ import math
 import fractions
 
 last_calculations = []
-memory_value = None
 engineering_notation = False
 last_result = None
+
 
 def store_last_result(result):
     global last_result
     last_result = result
+
 
 def clear():
     entry.delete(0, tk.END)
@@ -23,14 +24,17 @@ def insert_result(result):
         last_calculations.pop(0)
     history_label.config(text='\n'.join(last_calculations))
     store_last_result(result)
-    entry.delete(0, tk.END)
-    entry.insert(tk.END, str(result))
-    if result == int(result):
-        result = int(result)
-    else:
-        result = float(result)
+
+    # Check if the result is an integer or a float without any trailing ".0"
+    if isinstance(result, float):
+        if result.is_integer():
+            result = int(result)
+        else:
+            result = str(result).rstrip('0').rstrip('.')  # Remove trailing ".0"
+
     clear()
     entry.insert(tk.END, str(result))
+
 
 def evaluate_expression():
     try:
@@ -39,23 +43,43 @@ def evaluate_expression():
         expression = expression.replace('ln', 'math.log')
         expression = expression.replace('--', '+')
         expression = expression.replace('sqrt', 'math.sqrt')
+        expression = expression.replace('^', '**')
+
+        # Handle trigonometric functions separately
+        trig_functions = ['sin', 'cos', 'tan']
+        for func in trig_functions:
+            expression = expression.replace(func, f'math.{func}')
+
         result = eval(expression)
         insert_result(result)
     except Exception as e:
+        print(f"{e}")
         clear()
         entry.insert(tk.END, "Error")
+
 
 def insert_character(char):
     current_text = entry.get()
     if current_text == "Error":
         clear()
-    entry.insert(tk.END, char)
+    if char == "0" or (current_text and current_text[-1].isdigit() and char.isdigit()):
+        # Insert the character if it's "0" or if the last character is a digit and the new character is also a digit
+        entry.insert(tk.END, char)
+    elif char in ["sin(", "cos(", "tan("]:
+        # Insert "sin(", "cos(", or "tan(" followed by the current text and ")"
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, char + current_text + ")")
+    else:
+        entry.insert(tk.END, char)
+
 
 def insert_pi():
     entry.insert(tk.END, str(math.pi))
 
+
 def insert_e():
     entry.insert(tk.END, str(math.e))
+
 
 def insert_sqrt():
     current_text = entry.get()
@@ -65,64 +89,94 @@ def insert_sqrt():
     else:
         entry.insert(tk.END, "sqrt(")
 
+
 def insert_pow():
-    entry.insert(tk.END, "**")
+    entry.insert(tk.END, "^")
+
 
 def insert_pow_2():
     current_text = entry.get()
     try:
         result = eval(f"{current_text} ** 2")
         insert_result(result)
+        history_label_text = f"{current_text}^2={result}"
+        last_calculations.append(history_label_text)
+        if len(last_calculations) > 3:
+            last_calculations.pop(0)
+        history_label.config(text='\n'.join(last_calculations))
     except Exception as e:
+        print(f"{e}")
         clear()
         entry.insert(tk.END, "Error")
+
 
 def insert_pow_3():
     current_text = entry.get()
     try:
         result = eval(f"{current_text} ** 3")
         insert_result(result)
+        history_label_text = f"{current_text}^3={result}"
+        last_calculations.append(history_label_text)
+        if len(last_calculations) > 3:
+            last_calculations.pop(0)
+        history_label.config(text='\n'.join(last_calculations))
     except Exception as e:
+        print(f"{e}")
         clear()
         entry.insert(tk.END, "Error")
 
+
 def insert_factorial():
     entry.insert(tk.END, "math.factorial(")
+
 
 def delete_last_character():
     current_text = entry.get()
     if current_text:
         entry.delete(len(current_text) - 1, tk.END)
 
+
 def calculate_percentage():
+    result = None
+    history_label_text = None
     try:
         expression = entry.get()
-        if "+" in expression:
-            value, percentage = expression.split("+")
-            result = float(value) + (float(value) * (float(percentage) / 100))
-        elif "-" in expression:
-            value, percentage = expression.split("-")
-            result = float(value) - (float(value) * (float(percentage) / 100))
-        else:
-            result = eval(expression)
+        if expression.strip() == "":
+            raise ValueError("No expression to calculate percentage")
 
-        insert_result(result)
+        if any(op in expression for op in ["+", "-", "*", "/"]):
+            if "+" in expression:
+                value, percentage = expression.split("+")
+                result = float(value) + (float(value) * (float(percentage) / 100))
+                history_label_text = f"{value}+{percentage}%={result}"
+            elif "-" in expression:
+                value, percentage = expression.split("-")
+                result = float(value) - (float(value) * (float(percentage) / 100))
+                history_label_text = f"{value}-{percentage}%={result}"
+            elif "*" in expression:
+                value, percentage = expression.split("*")
+                result = float(value) * (1 + float(percentage) / 100)
+                history_label_text = f"{value}*{percentage}%={result}"
+            elif "/" in expression:
+                value, percentage = expression.split("/")
+                result = float(value) / (1 - float(percentage) / 100)
+                history_label_text = f"{value}/{percentage}%={result}"
+        else:
+            raise ValueError("Invalid expression for percentage calculation")
+
+        store_last_result(result)
+        clear()
+        entry.insert(tk.END, str(result))  # Insert the result without any trailing zeros
+        last_calculations.append(history_label_text)
+        if len(last_calculations) > 3:
+            last_calculations.pop(0)
+        history_label.config(text='\n'.join(last_calculations))
     except Exception as e:
+        print(f"{e}")
         clear()
         entry.insert(tk.END, "Error")
 
-def memory_add():
-    global memory_value
-    try:
-        value = float(entry.get())
-        memory_value = value
-    except ValueError:
-        pass
 
-def memory_recall():
-    global memory_value
-    if memory_value is not None:
-        entry.insert(tk.END, str(memory_value))
 
 def update_display():
     current_text = entry.get()
@@ -143,6 +197,7 @@ def update_display():
         entry.delete(0, tk.END)
         entry.insert(tk.END, current_text)
 
+
 def insert_log():
     current_text = entry.get()
     if current_text.strip():
@@ -150,6 +205,7 @@ def insert_log():
         entry.insert(tk.END, f"log({current_text})")
     else:
         entry.insert(tk.END, "log(")
+
 
 def insert_ln():
     current_text = entry.get()
@@ -159,12 +215,6 @@ def insert_ln():
     else:
         entry.insert(tk.END, "ln(")
 
-def insert_negation():
-    current_text = entry.get()
-    if current_text.startswith('-'):
-        entry.delete(0)
-    else:
-        entry.insert(0, "-")
 
 def absolute_value_or_fraction():
     current_text = entry.get().strip()
@@ -184,19 +234,26 @@ def absolute_value_or_fraction():
     clear()
     entry.insert(tk.END, str(result))
 
+
 def combinations():
     try:
-        n = int(entry.get())
-        clear()
-        entry.insert(tk.END, str(n) + "C")
+        expression = entry.get().replace(" ", "")  # Remove any spaces
+        if "nCr" in expression:
+            n, r = map(int, expression.split("nCr"))
+            result = math.comb(n, r)
+            clear()
+            entry.insert(tk.END, str(result))
+        else:
+            entry.insert(tk.END, "nCr")
     except ValueError:
         clear()
         entry.insert(tk.END, "Error")
 
+
 def n_choose_r():
     try:
         expression = entry.get()
-        n, r = map(int, expression.split("C"))
+        n, r = map(int, expression.split("nCr"))
         result = math.comb(n, r)
         clear()
         entry.insert(tk.END, str(result))
@@ -204,31 +261,19 @@ def n_choose_r():
         clear()
         entry.insert(tk.END, "Error")
 
-def polar_to_rectangular():
-    try:
-        expression = entry.get().strip()
-        if expression:
-            if ',' in expression:
-                r, theta = map(float, expression.split(","))
-            else:
-                r = float(expression)
-                theta = 0
-            x = r * math.cos(math.radians(theta))
-            y = r * math.sin(math.radians(theta))
-            clear()
-            entry.insert(tk.END, f"({x}, {y})")
-        else:
-            clear()
-            entry.insert(tk.END, "Error: No input provided")
-    except ValueError:
-        clear()
-        entry.insert(tk.END, "Error: Invalid input format")
 
 def equals():
-    if "C" in entry.get():
-        n_choose_r()
-    else:
-        evaluate_expression()
+    try:
+        expression = entry.get()
+        if "nCr" in expression:
+            combinations()
+        else:
+            evaluate_expression()
+    except Exception as e:
+        print(f"Exception occurred: {e}")
+        clear()
+        entry.insert(tk.END, "Error")
+
 
 def calculate_factorial():
     try:
@@ -239,10 +284,12 @@ def calculate_factorial():
         clear()
         entry.insert(tk.END, "Error")
 
+
 window = tk.Tk()
 window.title("Scientific Calculator")
 
-history_label = tk.Label(window, fg="black", bg="#C5BD9E", text="", font=('Helvetica', 12), height=3, anchor='e', bd=5, relief='flat')
+history_label = tk.Label(window, fg="black", bg="#C5BD9E", text="", font=('Helvetica', 12), height=3, anchor='e', bd=5,
+                         relief='flat')
 history_label.grid(row=0, column=0, columnspan=5, sticky="ew")
 
 entry = tk.Entry(window, font=('Helvetica', 20), justify='right', bg="#AFE7EB", bd=5, relief='ridge')
@@ -256,14 +303,9 @@ buttons = [
     ("e", insert_e),
     ("log", insert_log),
     ("ln", insert_ln),
-    ("RCL", memory_recall),
-    ("M+", memory_add),
     ("x!", calculate_factorial),
     ("ab/c", absolute_value_or_fraction),
-    ("Ans", lambda: insert_character(str(last_result))),
     ("nCr", combinations),
-    ("Pol(", polar_to_rectangular),
-    ("(-)", insert_negation),
     ("x²", insert_pow_2),
     ("x³", insert_pow_3),
     ("(", lambda: insert_character("(")),
@@ -292,16 +334,19 @@ buttons = [
 ]
 
 for i, (text, command) in enumerate(buttons):
-    if text in ["sin", "cos", "tan", "π", "e", "log", "ln", "RCL", "M+", "x!", "ab/c", "Ans", "nCr", "Pol(", "(-)", "x²", "x³", "(", ")", "%"]:
-        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="black", fg="#FF5733",font=("Ariel",(12)))
-    elif text in ["^","√","*","/","+","-"]:
-        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="grey", fg="black",font=("Ariel",(12)))
+    if text in ["sin", "cos", "tan", "π", "e", "log", "ln", "x!", "ab/c", "nCr", "x²", "x³", "(", ")", "%"]:
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="black", fg="#FF5733",
+                           font=("Ariel", 12))
+    elif text in ["^", "√", "*", "/", "+", "-"]:
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="grey", fg="black",
+                           font=("Ariel", 12))
     elif text == "AC" or text == "=" or text == "DEL":
-        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#FF5733", fg="black",font=("Ariel",(12)))
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#FF5733", fg="black",
+                           font=("Ariel", 12))
     else:
-        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#B6BBC3", fg="black",font=("Ariel",(12)))
+        button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#B6BBC3", fg="black",
+                           font=("Ariel", 12))
     button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=5, sticky="nsew")
-
 
 for i in range(2, len(buttons) // 5 + 3):
     window.grid_rowconfigure(i, weight=1)
