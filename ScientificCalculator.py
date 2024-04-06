@@ -18,7 +18,12 @@ def clear():
 
 def insert_result(result):
     global last_calculations
-    last_calculation = entry.get() + '=' + str(result)
+    current_text = entry.get()
+    if "math.factorial" in current_text:
+        # If the current calculation is a factorial, modify the history label accordingly
+        last_calculation = current_text + '!=' + str(result)
+    else:
+        last_calculation = entry.get() + '!=' + str(result)
     last_calculations.append(last_calculation)
     if len(last_calculations) > 3:
         last_calculations.pop(0)
@@ -175,7 +180,6 @@ def calculate_percentage():
         print(f"{e}")
         clear()
         entry.insert(tk.END, "Error")
-
 
 
 def update_display():
