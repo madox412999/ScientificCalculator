@@ -12,47 +12,50 @@ def clear():
 def insert_result(result):
     global last_calculations
     current_text = entry.get()
-    last_calculation = current_text + '=' + str(result)
-    last_calculations.append(last_calculation)
-    if len(last_calculations) > 3:
-        last_calculations.pop(0)
+    last_calculation = current_text + '=' + str(result)  # Create a string representing the calculation result
+    last_calculations.append(last_calculation)  # Append the calculation result to the list of last calculations
+    if len(last_calculations) > 3:  # Check if the number of calculations stored is greater than 3
+        last_calculations.pop(0)  # If so, remove the oldest calculation from the list
+        # Update the text displayed in the history label by joining the calculations with newline characters
     history_label.config(text='\n'.join(last_calculations))
 
-    if isinstance(result, float):
-        str(result).rstrip('0').rstrip('.')
-    else:
-        result = int(result)
+    if isinstance(result, float):  # Check if the result is a float
+        # If the result is a float,convert it to a string and remove  trailing zeros and decimal point
+        result = str(result).rstrip('0').rstrip('.')
     clear()
     entry.insert(tk.END, str(result))
 
 
 def evaluate_expression():
     try:
-        expression = entry.get()
-        expression = expression.replace('log', 'math.log10')
-        expression = expression.replace('ln', 'math.log')
-        expression = expression.replace('--', '+')
-        expression = expression.replace('sqrt', 'math.sqrt')
-        expression = expression.replace('^', '**')
+        expression = entry.get()  # Get the expression from the entry widget
+        expression = expression.replace('log', 'math.log10')  # Replace 'log' with 'math.log10'
+        expression = expression.replace('ln', 'math.log')  # Replace 'ln' with 'math.log'
+        expression = expression.replace('--', '+')  # Replace '--' with '+'
+        expression = expression.replace('sqrt', 'math.sqrt')  # Replace 'sqrt' with 'math.sqrt'
+        expression = expression.replace('^', '**')  # Replace '^' with '**'
         # Handle trigonometric functions separately
         trig_functions = ['sin', 'cos', 'tan']
         for func in trig_functions:
+            # Replace trigonometric functions with their math module equivalents
             expression = expression.replace(func, f'math.{func}')
 
-        result = eval(expression)
-        insert_result(result)
+        result = eval(expression)  # Evaluate the expression
+        insert_result(result)  # Insert the result into the entry widget
     except Exception as e:
-        print(f"{e}")
-        clear()
-        entry.insert(tk.END, "Error")
+        print(f"{e}")  # Print the exception message to the console
+        clear()  # Clear the entry widget
+        entry.insert(tk.END, "Error")  # Insert "Error" into the entry widget
 
 
 def insert_character(char):
     current_text = entry.get()
     if current_text == "Error":
         clear()
+    # Check if the character is a digit or if it's a valid continuation of the current expression
     if char == "0" or (current_text and current_text[-1].isdigit() and char.isdigit()):
         entry.insert(tk.END, char)
+    # If the character is a trigonometric function, add it to the current expression with parentheses
     elif char in ["sin(", "cos(", "tan("]:
         entry.delete(0, tk.END)
         entry.insert(tk.END, char + current_text + ")")
@@ -70,11 +73,11 @@ def insert_e():
 
 def insert_sqrt():
     current_text = entry.get()
-    if current_text.strip():
-        entry.delete(0, tk.END)
+    if current_text.strip():  # Check if there is any non-whitespace text in the entry
+        entry.delete(0, tk.END)  # If there is non-whitespace text, delete it and insert "sqrt(current_text)"
         entry.insert(tk.END, f"sqrt({current_text})")
     else:
-        entry.insert(tk.END, "sqrt(")
+        entry.insert(tk.END, "sqrt(")  # If there is no text, insert "sqrt("
 
 
 def insert_pow():
@@ -111,10 +114,6 @@ def insert_pow_3():
         print(f"{e}")
         clear()
         entry.insert(tk.END, "Error")
-
-
-def insert_factorial():
-    entry.insert(tk.END, "math.factorial(")
 
 
 def delete_last_character():
