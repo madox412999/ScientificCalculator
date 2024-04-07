@@ -2,8 +2,7 @@ import tkinter as tk
 import math
 import fractions
 
-last_calculations = []
-last_result = None
+last_calculations = []  # list for history label
 
 
 def clear():
@@ -20,10 +19,9 @@ def insert_result(result):
     history_label.config(text='\n'.join(last_calculations))
 
     if isinstance(result, float):
-        if result.is_integer():
-            result = int(result)
-        else:
-            result = str(result).rstrip('0').rstrip('.')
+        str(result).rstrip('0').rstrip('.')
+    else:
+        result = int(result)
     clear()
     entry.insert(tk.END, str(result))
 
