@@ -127,10 +127,12 @@ def calculate_percentage():
     history_label_text = None
     try:
         expression = entry.get()
-        if expression.strip() == "":
+        if expression.strip() == "":  # Check if the expression is empty
             raise ValueError("No expression to calculate percentage")
 
+        # Check if the expression contains any arithmetic operators
         if any(op in expression for op in ["+", "-", "*", "/"]):
+            # Perform percentage calculation based on the operator
             if "+" in expression:
                 value, percentage = expression.split("+")
                 result = float(value) + (float(value) * (float(percentage) / 100))
@@ -150,9 +152,9 @@ def calculate_percentage():
         else:
             raise ValueError("Invalid expression for percentage calculation")
 
-        clear()
-        entry.insert(tk.END, str(result))
-        last_calculations.append(history_label_text)
+        clear()  # Clear the entry widget
+        entry.insert(tk.END, str(result))  # inserting the result
+        last_calculations.append(history_label_text)  # Update the history label
         if len(last_calculations) > 3:
             last_calculations.pop(0)
         history_label.config(text='\n'.join(last_calculations))
