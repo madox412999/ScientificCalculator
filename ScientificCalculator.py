@@ -6,11 +6,6 @@ last_calculations = []
 last_result = None
 
 
-def store_last_result(result):
-    global last_result
-    last_result = result
-
-
 def clear():
     entry.delete(0, tk.END)
 
@@ -23,7 +18,6 @@ def insert_result(result):
     if len(last_calculations) > 3:
         last_calculations.pop(0)
     history_label.config(text='\n'.join(last_calculations))
-    store_last_result(result)
 
     if isinstance(result, float):
         if result.is_integer():
@@ -159,7 +153,6 @@ def calculate_percentage():
         else:
             raise ValueError("Invalid expression for percentage calculation")
 
-        store_last_result(result)
         clear()
         entry.insert(tk.END, str(result))
         last_calculations.append(history_label_text)
@@ -219,18 +212,6 @@ def combinations():
             entry.insert(tk.END, str(result))
         else:
             entry.insert(tk.END, "nCr")
-    except ValueError:
-        clear()
-        entry.insert(tk.END, "Error")
-
-
-def n_choose_r():
-    try:
-        expression = entry.get()
-        n, r = map(int, expression.split("nCr"))
-        result = math.comb(n, r)
-        clear()
-        entry.insert(tk.END, str(result))
     except ValueError:
         clear()
         entry.insert(tk.END, "Error")
