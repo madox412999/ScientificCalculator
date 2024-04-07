@@ -183,15 +183,15 @@ def insert_ln():
 
 
 def absolute_value_or_fraction():
-    current_text = entry.get().strip()
+    current_text = entry.get().strip()  # Get the current text in the entry field and remove leading,trailing whitespace
     try:
-        value = float(current_text)
-        if value < 0:
-            result = abs(value)
-        else:
-            if value.is_integer():
+        value = float(current_text)  # Attempt to convert the current text to a float
+        if value < 0:  # Check if the value is negative
+            result = abs(value)  # If negative, calculate the absolute value
+        else:  # If positive or zero, check if the value is an integer
+            if value.is_integer():  # If integer, convert to int(get the number without decimal part,for example 5.0=5)
                 result = int(value)
-            else:
+            else:  # If not an integer, convert to a fraction
                 fraction = fractions.Fraction(value).limit_denominator()
                 result = f"{fraction.numerator}/{fraction.denominator}"
     except ValueError:
@@ -203,14 +203,18 @@ def absolute_value_or_fraction():
 
 def combinations():
     try:
+        # Get the expression from the entry widget and remove spaces
         expression = entry.get().replace(" ", "")
-        if "nCr" in expression:
+        if "nCr" in expression:  # Check if the expression contains "nCr"
+            # If yes, split the expression around "nCr" and convert the parts to integers
             n, r = map(int, expression.split("nCr"))
+            # Calculate the combination (n choose r) using math.comb
             result = math.comb(n, r)
+            # Clear the entry widget and insert the result
             clear()
             entry.insert(tk.END, str(result))
         else:
-            entry.insert(tk.END, "nCr")
+            entry.insert(tk.END, "nCr")  # If "nCr" is not in the expression, insert "nCr" into the entry widget
     except ValueError:
         clear()
         entry.insert(tk.END, "Error")
@@ -219,10 +223,10 @@ def combinations():
 def equals():
     try:
         expression = entry.get()
-        if "nCr" in expression:
-            combinations()
+        if "nCr" in expression:  # Check if the expression involves combinations
+            combinations()  # If so, calculate combinations
         else:
-            evaluate_expression()
+            evaluate_expression()  # Otherwise, evaluate the expression
     except Exception as e:
         print(f"Exception occurred: {e}")
         clear()
@@ -231,9 +235,9 @@ def equals():
 
 def calculate_factorial():
     try:
-        n = int(entry.get())
-        result = math.factorial(n)
-        insert_result(result)
+        n = int(entry.get())  # Get the integer value from the entry widget
+        result = math.factorial(n)  # Calculate the factorial of the value
+        insert_result(result)  # Insert the result into the entry widget
     except ValueError:
         clear()
         entry.insert(tk.END, "Error")
@@ -286,25 +290,27 @@ buttons = [
     ("AC", clear),
     ("=", equals),
 ]
-
+# Iterate through the list of buttons and their associated commands
 for i, (text, command) in enumerate(buttons):
+    # Determine the appearance of the button based on its text
     if text in ["sin", "cos", "tan", "π", "e", "log", "ln", "x!", "ab/c", "nCr", "x²", "x³", "(", ")", "%"]:
         button = tk.Button(window, text=text, width=8, height=2, command=command, bg="black", fg="#FF5733",
                            font=("Ariel", 12))
     elif text in ["^", "√", "*", "/", "+", "-"]:
         button = tk.Button(window, text=text, width=8, height=2, command=command, bg="grey", fg="black",
                            font=("Ariel", 12))
-    elif text == "AC" or text == "=" or text == "DEL":
+    elif text in ["AC", "=", "DEL"]:
         button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#FF5733", fg="black",
                            font=("Ariel", 12))
     else:
         button = tk.Button(window, text=text, width=8, height=2, command=command, bg="#B6BBC3", fg="black",
                            font=("Ariel", 12))
     button.grid(row=(i // 5) + 2, column=i % 5, padx=3, pady=5, sticky="nsew")
-
+# Configure row weights to ensure proper resizing
 for i in range(2, len(buttons) // 5 + 3):
     window.grid_rowconfigure(i, weight=1)
 
+# Configure column weights to ensure proper resizing
 for i in range(5):
     window.grid_columnconfigure(i, weight=1)
 
