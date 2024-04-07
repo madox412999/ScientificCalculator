@@ -3,7 +3,6 @@ import math
 import fractions
 
 last_calculations = []
-engineering_notation = False
 last_result = None
 
 
@@ -20,7 +19,6 @@ def insert_result(result):
     global last_calculations
     current_text = entry.get()
     if "math.factorial" in current_text:
-        # If the current calculation is a factorial, modify the history label accordingly
         last_calculation = current_text + '=' + str(result)
     else:
         last_calculation = entry.get() + '=' + str(result)
@@ -30,13 +28,11 @@ def insert_result(result):
     history_label.config(text='\n'.join(last_calculations))
     store_last_result(result)
 
-    # Check if the result is an integer or a float without any trailing ".0"
     if isinstance(result, float):
         if result.is_integer():
             result = int(result)
         else:
-            result = str(result).rstrip('0').rstrip('.')  # Remove trailing ".0"
-
+            result = str(result).rstrip('0').rstrip('.')
     clear()
     entry.insert(tk.END, str(result))
 
@@ -49,7 +45,6 @@ def evaluate_expression():
         expression = expression.replace('--', '+')
         expression = expression.replace('sqrt', 'math.sqrt')
         expression = expression.replace('^', '**')
-
         # Handle trigonometric functions separately
         trig_functions = ['sin', 'cos', 'tan']
         for func in trig_functions:
@@ -68,10 +63,8 @@ def insert_character(char):
     if current_text == "Error":
         clear()
     if char == "0" or (current_text and current_text[-1].isdigit() and char.isdigit()):
-        # Insert the character if it's "0" or if the last character is a digit and the new character is also a digit
         entry.insert(tk.END, char)
     elif char in ["sin(", "cos(", "tan("]:
-        # Insert "sin(", "cos(", or "tan(" followed by the current text and ")"
         entry.delete(0, tk.END)
         entry.insert(tk.END, char + current_text + ")")
     else:
@@ -171,7 +164,7 @@ def calculate_percentage():
 
         store_last_result(result)
         clear()
-        entry.insert(tk.END, str(result))  # Insert the result without any trailing zeros
+        entry.insert(tk.END, str(result))
         last_calculations.append(history_label_text)
         if len(last_calculations) > 3:
             last_calculations.pop(0)
@@ -180,26 +173,6 @@ def calculate_percentage():
         print(f"{e}")
         clear()
         entry.insert(tk.END, "Error")
-
-
-def update_display():
-    current_text = entry.get()
-    if engineering_notation:
-        try:
-            value = float(current_text)
-            exponent = math.floor(math.log10(abs(value)))
-            magnitude = value / (10 ** exponent)
-            if magnitude == int(magnitude):
-                entry.delete(0, tk.END)
-                entry.insert(tk.END, f"{int(magnitude)}e{exponent}")
-            else:
-                entry.delete(0, tk.END)
-                entry.insert(tk.END, f"{magnitude:.2f}e{exponent}")
-        except ValueError:
-            pass
-    else:
-        entry.delete(0, tk.END)
-        entry.insert(tk.END, current_text)
 
 
 def insert_log():
@@ -241,7 +214,7 @@ def absolute_value_or_fraction():
 
 def combinations():
     try:
-        expression = entry.get().replace(" ", "")  # Remove any spaces
+        expression = entry.get().replace(" ", "")
         if "nCr" in expression:
             n, r = map(int, expression.split("nCr"))
             result = math.comb(n, r)
